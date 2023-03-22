@@ -39,12 +39,16 @@ class NotesController extends Controller
         $request->validate([
             "title"=> "required|unique:notes,title",
             "description"=> "required|min:8",
+            "share" => "required"
         ]);
         $note = new Note();
         $note->user_id = Auth::user()->id;
         $note->title = $request->title;
         $note->description = $request->description;
         $note->save();
+
+        $note->shared()->attach($request->share);
+
 
         return redirect(route('notes.show', $note->id));
     }
